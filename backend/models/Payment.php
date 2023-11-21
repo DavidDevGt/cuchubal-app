@@ -1,9 +1,38 @@
 <?php
-class Payment {
+require_once('../db/database.php');
+
+class Payment
+{
     public $id;
     public $participantId;
     public $amount;
     public $paymentDate;
 
-    // Constructor, getters, setters, etc.
+    // Constructor
+    public function __construct($id, $participantId, $amount, $paymentDate)
+    {
+        $this->id = $id;
+        $this->participantId = $participantId;
+        $this->amount = $amount;
+        $this->paymentDate = $paymentDate;
+    }
+
+    // Getters y Setters
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getAmount() {
+        return $this->amount;
+    }
+
+    public function getPaymentDate() {
+        return $this->paymentDate;
+    }
+
+    // Método para calcular el total de pagos
+    public function getTotalPayments()
+    {
+        // Lógica para calcular el total de pagos
+    }
 }
