@@ -2,10 +2,10 @@
 // Conexión a la base de datos
 function dbConnect()
 {
-    $host = 'localhost'; // Ajusta según sea necesario
-    $user = 'root'; // Ajusta según sea necesario
-    $password = ''; // Ajusta según sea necesario
-    $database = 'cuchubal_app'; // Ajusta según sea necesario
+    $host = 'localhost';
+    $user = 'root';
+    $password = '';
+    $database = 'cuchubal_app';
 
     $mysqli = new mysqli($host, $user, $password, $database);
 
