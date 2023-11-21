@@ -31,8 +31,8 @@ class Payment
     }
 
     // Método para calcular el total de pagos
-    public function getTotalPayments()
-    {
-        // Lógica para calcular el total de pagos
-    }
+    // public function getTotalPayments()
+    // {
+    //     // Lógica para calcular el total de pagos
+    // }
 }
