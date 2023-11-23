@@ -80,6 +80,9 @@ CREATE TABLE
         scheduled_date DATE,
         amount DECIMAL(10, 2),
         status VARCHAR(50), -- Por ejemplo: 'Pendiente', 'Completado'
+        active TINYINT (1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (cuchubal_id) REFERENCES cuchubales (id),
         FOREIGN KEY (participant_id) REFERENCES participants (id)
     );
