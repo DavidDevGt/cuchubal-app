@@ -1,5 +1,5 @@
 <?php
-require_once('../models/Contribution.php');
+require_once __DIR__ . '/../models/Contribution.php';
 
 class ContributionService
 {
