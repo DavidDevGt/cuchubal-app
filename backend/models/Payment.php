@@ -29,10 +29,4 @@ class Payment
     public function getPaymentDate() {
         return $this->paymentDate;
     }
-
-    // Método para calcular el total de pagos
-    // public function getTotalPayments()
-    // {
-    //     // Lógica para calcular el total de pagos
-    // }
 }
