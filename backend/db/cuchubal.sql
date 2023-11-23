@@ -80,7 +80,7 @@ CREATE TABLE
         participant_id INT,
         scheduled_date DATE,
         amount DECIMAL(10, 2),
-        status VARCHAR(50), -- Por ejemplo: 'Pendiente', 'Completado'
+        status VARCHAR(50), -- Por ejemplo: 'No pagado', 'Parcial', 'Completado'
         active TINYINT (1) DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
