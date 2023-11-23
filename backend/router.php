@@ -35,20 +35,20 @@ $router->map('POST', '/participants', function () use ($participantService) {
     $data = getRequestData();
     $participantId = $participantService->createParticipant($data['name'], $data['contact'], $data['address'], $data['paymentMethod']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Participant created', 'participantId' => $participantId]);
+    echo json_encode(['message' => 'Participante creado', 'participantId' => $participantId]);
 });
 
 $router->map('PUT', '/participants/[i:id]', function ($id) use ($participantService) {
     $data = getRequestData();
     $participantService->updateParticipant($id, $data['name'], $data['contact'], $data['address'], $data['paymentMethod']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Participant updated']);
+    echo json_encode(['message' => 'Participante actualizado']);
 });
 
 $router->map('DELETE', '/participants/[i:id]', function ($id) use ($participantService) {
     $participantService->softDeleteParticipant($id);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Participant deleted']);
+    echo json_encode(['message' => 'Participante eliminado']);
 });
 
 // Rutas para Usuarios
@@ -61,7 +61,7 @@ $router->map('POST', '/users', function () use ($userService) {
     $data = getRequestData();
     $user = $userService->createUser($data['username'], $data['password']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'User created', 'userId' => $user]);
+    echo json_encode(['message' => 'Usuario creado', 'userId' => $user]);
 });
 
 $router->map('PUT', '/users/[i:id]', function ($id) use ($userService) {
