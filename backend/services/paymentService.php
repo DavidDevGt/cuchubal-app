@@ -1,45 +1,42 @@
 <?php
 require_once __DIR__ . '/../models/Payment.php';
 
-class PaymentService
-{
-    // Procesar un nuevo pago
-    public function processPayment($participantId, $amount, $paymentDate)
-    {
-        $sql = "INSERT INTO payments (participant_id, amount, payment_date) VALUES (?, ?, ?)";
-        return dbQueryPreparada($sql, [$participantId, $amount, $paymentDate]);
+class PaymentService {
+
+    // Crear un nuevo pago
+    public function createPayment($participantId, $amount, $paymentDate, $cuchubalId) {
+        $payment = new Payment(0, $participantId, $amount, $paymentDate, $cuchubalId);
+        $payment->save();
+        return $payment->getId();
     }
 
-    // Leer pagos (activos)
-    public function listActivePayments()
-    {
-        $sql = "SELECT * FROM payments WHERE active = 1";
-        $result = dbQuery($sql);
-        $payments = [];
-        while ($row = dbFetchAssoc($result)) {
-            $payments[] = $row;
+    // Obtener un pago por ID
+    public function getPaymentById($id) {
+        return Payment::getById($id);
+    }
+
+    // Actualizar un pago existente
+    public function updatePayment($id, $participantId, $amount, $paymentDate, $cuchubalId) {
+        $payment = new Payment($id, $participantId, $amount, $paymentDate, $cuchubalId);
+        $payment->save();
+    }
+
+    // Eliminar un pago
+    public function deletePayment($id) {
+        $payment = Payment::getById($id);
+        if ($payment) {
+            $payment->delete();
         }
-        return $payments;
     }
 
-    // Actualizar un pago
-    public function updatePayment($id, $participantId, $amount, $paymentDate)
-    {
-        $sql = "UPDATE payments SET participant_id = ?, amount = ?, payment_date = ? WHERE id = ?";
-        return dbQueryPreparada($sql, [$participantId, $amount, $paymentDate, $id]);
+    // Listar todos los pagos de un cuchubal específico
+    public function listPaymentsByCuchubal($cuchubalId) {
+        return Payment::getAllByCuchubalId($cuchubalId);
     }
 
-    // Soft delete de un pago
-    public function softDeletePayment($id)
-    {
-        $sql = "UPDATE payments SET active = 0 WHERE id = ?";
-        return dbQueryPreparada($sql, [$id]);
-    }
-
-    // Leer pagos por participante
-    public function getPaymentsByParticipant($participantId)
-    {
-        $sql = "SELECT * FROM payments WHERE participant_id = ? AND active = 1";
-        $result = dbQueryPreparada($sql, [$participantId]);
-    }
+    // Métodos adicionales según la lógica de negocio pueden incluir:
+    // - Validar los pagos según el cronograma de pagos
+    // - Actualizar el estado del cronograma de pagos
+    // - Consultar pagos pendientes o completados
+    // - Etc.
 }
