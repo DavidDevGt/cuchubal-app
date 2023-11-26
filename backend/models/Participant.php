@@ -8,15 +8,18 @@ class Participant
     public $contact;
     public $address;
     public $paymentMethod;
+    public $cuchubalId; // Nuevo campo para asociar el participante a un cuchubal
+
 
     // Constructor
-    public function __construct($id, $name, $contact, $address, $paymentMethod)
+    public function __construct($id = 0, $name = '', $contact = '', $address = '', $paymentMethod = '', $cuchubalId = 0)
     {
         $this->id = $id;
         $this->name = $name;
         $this->contact = $contact;
         $this->address = $address;
         $this->paymentMethod = $paymentMethod;
+        $this->cuchubalId = $cuchubalId;
     }
 
     // Getters y setters
@@ -45,9 +48,60 @@ class Participant
         return $this->paymentMethod;
     }
 
-    // Método para verificar si el participante está activo
-    public function isActive()
+    // Setters
+
+    public function setName($value)
     {
-        // Lógica para verificar si el participante está activo
+        $this->name = $value;
+    }
+
+    public function setContact($value)
+    {
+        $this->contact = $value;
+    }
+
+    public function setAddress($value)
+    {
+        $this->address = $value;
+    }
+
+    public function setPaymentMethod($value)
+    {
+        $this->paymentMethod = $value;
+    }
+
+    public function setCuchubalId($value)
+    {
+        $this->cuchubalId = $value;
+    }
+
+    // Métodos
+    public function save()
+    {
+        if ($this->id == 0) {
+            // Crear nuevo participante
+            $sql = "INSERT INTO participants (name, contact, address, payment_method, cuchubal_id) VALUES (?, ?, ?, ?, ?)";
+            $this->id = dbQueryPreparada($sql, [$this->name, $this->contact, $this->address, $this->paymentMethod, $this->cuchubalId]);
+        } else {
+            // Actualizar participante existente
+            $sql = "UPDATE participants SET name = ?, contact = ?, address = ?, payment_method = ?, cuchubal_id = ? WHERE id = ?";
+            dbQueryPreparada($sql, [$this->name, $this->contact, $this->address, $this->paymentMethod, $this->cuchubalId, $this->id]);
+        }
+    }
+
+    public static function getById($id)
+    {
+        $sql = "SELECT * FROM participants WHERE id = ?";
+        $result = dbQueryPreparada($sql, [$id]);
+        if ($row = dbFetchAssoc($result)) {
+            return new Participant($row['id'], $row['name'], $row['contact'], $row['address'], $row['payment_method'], $row['cuchubal_id']);
+        }
+        return null;
+    }
+
+    public function delete()
+    {
+        $sql = "DELETE FROM participants WHERE id = ?";
+        dbQueryPreparada($sql, [$this->id]);
     }
 }
