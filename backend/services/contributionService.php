@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Contribution.php';
+require_once __DIR__ . '/../models/PaymentSchedule.php';
 
 class ContributionService
 {
@@ -46,13 +47,46 @@ class ContributionService
         return $contributions;
     }
 
+    // Listar todas las contribuciones activas
+    public function listActiveContributions()
+    {
+        $sql = "SELECT * FROM contributions WHERE active = 1";
+        $result = dbQuery($sql);
+        $contributions = [];
+        while ($row = dbFetchAssoc($result)) {
+            $contributions[] = new Contribution(
+                $row['id'],
+                $row['participant_id'],
+                $row['amount'],
+                $row['date'],
+                $row['status'],
+                $row['cuchubal_id']
+            );
+        }
+        return $contributions;
+    }
+
+
     // Métodos adicionales según la lógica de negocio
 
     // Validar contribuciones según el cronograma de pagos
     public function validateContributionsBySchedule($cuchubalId)
     {
-        // Implementar lógica para validar las contribuciones en base al cronograma de pagos
-        // Esto puede incluir verificar si las contribuciones se ajustan a las fechas y montos establecidos
+        $contributions = $this->listContributionsByCuchubal($cuchubalId);
+        $paymentSchedule = PaymentSchedule::getAllByCuchubalId($cuchubalId);
+
+        foreach ($contributions as $contribution) {
+            foreach ($paymentSchedule as $schedule) {
+                if (
+                    $contribution->getParticipantId() == $schedule->getParticipantId() &&
+                    $contribution->getDate() <= $schedule->getScheduledDate() &&
+                    $contribution->getAmount() >= $schedule->getAmount()
+                ) {
+                    $contribution->setStatus('Completado');
+                    $contribution->save();
+                }
+            }
+        }
     }
 
     // Actualizar el estado de las contribuciones

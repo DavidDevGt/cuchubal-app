@@ -112,4 +112,23 @@ class PaymentSchedule
         $sql = "DELETE FROM payment_schedule WHERE id = ?";
         dbQueryPreparada($sql, [$this->id]);
     }
+
+    // Método para obtener todos los cronogramas de pago por cuchubal_id
+    public static function getAllByCuchubalId($cuchubalId)
+    {
+        $sql = "SELECT * FROM payment_schedule WHERE cuchubal_id = ?";
+        $result = dbQueryPreparada($sql, [$cuchubalId]);
+        $schedules = [];
+        while ($row = dbFetchAssoc($result)) {
+            $schedules[] = new PaymentSchedule(
+                $row['id'],
+                $row['cuchubal_id'],
+                $row['participant_id'],
+                $row['scheduled_date'],
+                $row['amount'],
+                $row['status']
+            );
+        }
+        return $schedules;
+    }
 }
