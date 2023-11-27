@@ -6,12 +6,16 @@ require_once 'services/participantService.php';
 require_once 'services/contributionService.php';
 require_once 'services/paymentService.php';
 require_once 'services/userService.php';
+require_once 'services/cuchubalService.php';
+require_once 'services/paymentScheduleService.php';
 
 // Instancias de los servicios
 $participantService = new ParticipantService();
 $contributionService = new ContributionService();
 $paymentService = new PaymentService();
 $userService = new UserService();
+$cuchubalService = new CuchubalService();
+$paymentScheduleService = new PaymentScheduleService();
 
 // Crear el router
 $router = new AltoRouter();
@@ -25,22 +29,22 @@ function getRequestData()
     return json_decode(file_get_contents('php://input'), true);
 }
 
-// Rutas para Participantes
-$router->map('GET', '/participants', function () use ($participantService) {
+// *Rutas para Participantes* //
+$router->map('GET', '/participants/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($participantService) {
     header('Content-Type: application/json');
-    echo json_encode($participantService->listActiveParticipants());
+    echo json_encode($participantService->listActiveParticipantsByCuchubal($cuchubalId));
 });
 
 $router->map('POST', '/participants', function () use ($participantService) {
     $data = getRequestData();
-    $participantId = $participantService->createParticipant($data['name'], $data['contact'], $data['address'], $data['paymentMethod']);
+    $participantId = $participantService->createParticipant($data['name'], $data['contact'], $data['address'], $data['paymentMethod'], $data['cuchubalId']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Participante creado', 'participantId' => $participantId]);
 });
 
 $router->map('PUT', '/participants/[i:id]', function ($id) use ($participantService) {
     $data = getRequestData();
-    $participantService->updateParticipant($id, $data['name'], $data['contact'], $data['address'], $data['paymentMethod']);
+    $participantService->updateParticipant($id, $data['name'], $data['contact'], $data['address'], $data['paymentMethod'], $data['cuchubalId']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Participante actualizado']);
 });
@@ -51,83 +55,242 @@ $router->map('DELETE', '/participants/[i:id]', function ($id) use ($participantS
     echo json_encode(['message' => 'Participante eliminado']);
 });
 
-// Rutas para Usuarios
+$router->map('PUT', '/participants/[i:id]/activate', function ($id) use ($participantService) {
+    $participantService->activateParticipant($id);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Participante activado']);
+});
+
+$router->map('PUT', '/participants/[i:id]/deactivate', function ($id) use ($participantService) {
+    $participantService->deactivateParticipant($id);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Participante desactivado']);
+});
+
+$router->map('GET', '/participants/[i:id]', function ($id) use ($participantService) {
+    header('Content-Type: application/json');
+    echo json_encode($participantService->getParticipantDetails($id));
+});
+
+$router->map('GET', '/participants/search', function () use ($participantService) {
+    $data = getRequestData();
+    header('Content-Type: application/json');
+    echo json_encode($participantService->getParticipantByNameOrContactInCuchubal($data['searchTerm'], $data['cuchubalId']));
+});
+
+// *Rutas para Usuarios* //
 $router->map('GET', '/users', function () use ($userService) {
     header('Content-Type: application/json');
     echo json_encode($userService->getAllUsers());
 });
 
+$router->map('GET', '/users/[i:id]', function ($id) use ($userService) {
+    header('Content-Type: application/json');
+    echo json_encode($userService->getUserById($id));
+});
+
 $router->map('POST', '/users', function () use ($userService) {
     $data = getRequestData();
-    $user = $userService->createUser($data['username'], $data['password']);
+    $userId = $userService->createUser($data['username'], $data['password']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Usuario creado', 'userId' => $user]);
+    echo json_encode(['message' => 'Usuario creado', 'userId' => $userId]);
 });
 
 $router->map('PUT', '/users/[i:id]', function ($id) use ($userService) {
     $data = getRequestData();
-    $userService->updateUserPassword($id, $data['password']);
+    $userService->updateUser($id, $data['username'], $data['password']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'User password updated']);
+    echo json_encode(['message' => 'Información de usuario actualizada']);
 });
 
 $router->map('DELETE', '/users/[i:id]', function ($id) use ($userService) {
-    $userService->softDeleteUser($id);
+    $userService->deleteUser($id);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'User deleted']);
+    echo json_encode(['message' => 'Usuario eliminado']);
 });
 
-// Rutas para Pagos
-$router->map('GET', '/payments', function () use ($paymentService) {
+// *Rutas para Pagos por Cuchubal* //
+
+$router->map('GET', '/payments/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($paymentService) {
     header('Content-Type: application/json');
-    echo json_encode($paymentService->listActivePayments());
+    echo json_encode($paymentService->listPaymentsByCuchubal($cuchubalId));
+});
+
+$router->map('GET', '/payments/[i:id]', function ($id) use ($paymentService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentService->getPaymentById($id));
+});
+
+$router->map('GET', '/payments/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($paymentService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentService->listPaymentsByCuchubal($cuchubalId));
+});
+
+$router->map('GET', '/payments/participant/[i:participantId]', function ($participantId) use ($paymentService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentService->getPaymentsByParticipant($participantId));
 });
 
 $router->map('POST', '/payments', function () use ($paymentService) {
     $data = getRequestData();
-    $paymentId = $paymentService->processPayment($data['participantId'], $data['amount'], $data['paymentDate']);
+    $paymentId = $paymentService->createPayment($data['participantId'], $data['amount'], $data['paymentDate'], $data['cuchubalId']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Payment processed', 'paymentId' => $paymentId]);
+    echo json_encode(['message' => 'Pago procesado', 'paymentId' => $paymentId]);
 });
 
 $router->map('PUT', '/payments/[i:id]', function ($id) use ($paymentService) {
     $data = getRequestData();
-    $paymentService->updatePayment($id, $data['participantId'], $data['amount'], $data['paymentDate']);
+    $paymentService->updatePayment($id, $data['participantId'], $data['amount'], $data['paymentDate'], $data['cuchubalId']);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Payment updated']);
+    echo json_encode(['message' => 'Pago actualizado']);
 });
 
 $router->map('DELETE', '/payments/[i:id]', function ($id) use ($paymentService) {
-    $paymentService->softDeletePayment($id);
+    $paymentService->deletePayment($id);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Payment deleted']);
+    echo json_encode(['message' => 'Pago eliminado']);
 });
 
-// Rutas para Contribuciones
+// *Rutas para Contribuciones* //
 $router->map('GET', '/contributions', function () use ($contributionService) {
     header('Content-Type: application/json');
     echo json_encode($contributionService->listActiveContributions());
 });
 
+$router->map('GET', '/contributions/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($contributionService) {
+    header('Content-Type: application/json');
+    echo json_encode($contributionService->listContributionsByCuchubal($cuchubalId));
+});
+
+$router->map('GET', '/contributions/cuchubal/[i:cuchubalId]/pending', function ($cuchubalId) use ($contributionService) {
+    header('Content-Type: application/json');
+    echo json_encode($contributionService->listPendingContributions($cuchubalId));
+});
+
+$router->map('GET', '/contributions/cuchubal/[i:cuchubalId]/total', function ($cuchubalId) use ($contributionService) {
+    header('Content-Type: application/json');
+    echo json_encode(['total' => $contributionService->calculateTotalContributions($cuchubalId)]);
+});
+
 $router->map('POST', '/contributions', function () use ($contributionService) {
     $data = getRequestData();
-    $contributionId = $contributionService->addContribution($data['participantId'], $data['amount'], $data['date']);
+    $contributionId = $contributionService->createContribution($data['participantId'], $data['amount'], $data['date'], $data['cuchubalId']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Contribution added', 'contributionId' => $contributionId]);
 });
 
 $router->map('PUT', '/contributions/[i:id]', function ($id) use ($contributionService) {
     $data = getRequestData();
-    $contributionService->updateContribution($id, $data['participantId'], $data['amount'], $data['date']);
+    $contributionService->updateContribution($id, $data['participantId'], $data['amount'], $data['date'], $data['cuchubalId']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Contribution updated']);
 });
 
 $router->map('DELETE', '/contributions/[i:id]', function ($id) use ($contributionService) {
-    $contributionService->softDeleteContribution($id);
+    $contributionService->deleteContribution($id);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Contribution deleted']);
 });
+
+$router->map('PUT', '/contributions/[i:id]/status', function ($id) use ($contributionService) {
+    $data = getRequestData();
+    $contributionService->updateContributionStatus($id, $data['status']);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Contribution status updated']);
+});
+
+// *Rutas para Cuchubales* //
+$router->map('GET', '/cuchubales', function () use ($cuchubalService) {
+    header('Content-Type: application/json');
+    echo json_encode($cuchubalService->listCuchubalesByUser($_GET['userId']));
+});
+
+$router->map('GET', '/cuchubales/[i:id]', function ($id) use ($cuchubalService) {
+    header('Content-Type: application/json');
+    echo json_encode($cuchubalService->getCuchubalById($id));
+});
+
+$router->map('POST', '/cuchubales', function () use ($cuchubalService) {
+    $data = getRequestData();
+    $cuchubalId = $cuchubalService->createCuchubal($data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate']);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Cuchubal creado', 'cuchubalId' => $cuchubalId]);
+});
+
+$router->map('PUT', '/cuchubales/[i:id]', function ($id) use ($cuchubalService) {
+    $data = getRequestData();
+    $cuchubalService->updateCuchubal($id, $data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate']);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Cuchubal actualizado']);
+});
+
+$router->map('DELETE', '/cuchubales/[i:id]', function ($id) use ($cuchubalService) {
+    $cuchubalService->deleteCuchubal($id);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Cuchubal eliminado']);
+});
+
+// *Rutas para Programación de Pagos* //
+$router->map('GET', '/payment-schedule/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($paymentScheduleService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentScheduleService->listPaymentSchedulesByCuchubal($cuchubalId));
+});
+
+$router->map('GET', '/payment-schedule/[i:id]', function ($id) use ($paymentScheduleService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentScheduleService->getPaymentScheduleById($id));
+});
+
+$router->map('POST', '/payment-schedule', function () use ($paymentScheduleService) {
+    $data = getRequestData();
+    $scheduleId = $paymentScheduleService->createPaymentSchedule(
+        $data['cuchubalId'],
+        $data['participantId'],
+        $data['scheduledDate'],
+        $data['amount'],
+        $data['status']
+    );
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Programación de pago creada', 'scheduleId' => $scheduleId]);
+});
+
+$router->map('PUT', '/payment-schedule/[i:id]', function ($id) use ($paymentScheduleService) {
+    $data = getRequestData();
+    $paymentScheduleService->updatePaymentSchedule(
+        $id,
+        $data['cuchubalId'],
+        $data['participantId'],
+        $data['scheduledDate'],
+        $data['amount'],
+        $data['status']
+    );
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Programación de pago actualizada']);
+});
+
+$router->map('DELETE', '/payment-schedule/[i:id]', function ($id) use ($paymentScheduleService) {
+    $paymentScheduleService->deletePaymentSchedule($id);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Programación de pago eliminada']);
+});
+
+$router->map('PUT', '/payment-schedule/[i:id]/status', function ($id) use ($paymentScheduleService) {
+    $data = getRequestData();
+    $paymentScheduleService->updatePaymentScheduleStatus($id, $data['newStatus']);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Estado de programación de pago actualizado']);
+});
+
+$router->map('GET', '/payment-schedule/cuchubal/[i:cuchubalId]/summary', function ($cuchubalId) use ($paymentScheduleService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentScheduleService->getPaymentsSummaryByCuchubal($cuchubalId));
+});
+
+$router->map('GET', '/payment-schedule/participant/[i:participantId]/history', function ($participantId) use ($paymentScheduleService) {
+    header('Content-Type: application/json');
+    echo json_encode($paymentScheduleService->getPaymentHistoryByParticipant($participantId));
+});
+
 
 // Manejar la solicitud
 $match = $router->match();
