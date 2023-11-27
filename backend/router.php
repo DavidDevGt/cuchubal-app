@@ -109,8 +109,24 @@ $router->map('DELETE', '/users/[i:id]', function ($id) use ($userService) {
     echo json_encode(['message' => 'Usuario eliminado']);
 });
 
-// *Rutas para Pagos por Cuchubal* //
+$router->map('POST', '/login', function () use ($userService) {
+    $data = getRequestData();
+    if ($userService->login($data['username'], $data['password'])) {
+        echo json_encode(['message' => 'Login exitoso']);
+    } else {
+        http_response_code(401);
+        echo json_encode(['error' => 'Usuario o contraseña incorrectos']);
+    }
+});
 
+// Ejemplo
+
+// $router->map('GET', '/ruta-protegida', function () {
+//     isAuthenticated();
+//     // Resto del código...
+// });
+
+// *Rutas para Pagos por Cuchubal* //
 $router->map('GET', '/payments/cuchubal/[i:cuchubalId]', function ($cuchubalId) use ($paymentService) {
     header('Content-Type: application/json');
     echo json_encode($paymentService->listPaymentsByCuchubal($cuchubalId));
