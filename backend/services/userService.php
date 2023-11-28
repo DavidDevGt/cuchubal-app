@@ -46,6 +46,7 @@ class UserService
         $result = dbQueryPreparada($sql, [$username]);
         if ($row = dbFetchAssoc($result)) {
             if (password_verify($password, $row['password'])) {
+                session_regenerate_id(); // Regenera el id de la sesión para evitar ataques de fijación de sesión
                 $_SESSION['user'] = ['id' => $row['id'], 'username' => $row['username']];
                 return true;
             }
