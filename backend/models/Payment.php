@@ -7,14 +7,17 @@ class Payment
     public $participantId;
     public $amount;
     public $paymentDate;
+    public $status;  // Nuevo campo
+
     public $cuchubalId; // Nuevo campo
 
-    public function __construct($id = 0, $participantId = 0, $amount = 0.0, $paymentDate = null, $cuchubalId = 0)
+    public function __construct($id = 0, $participantId = 0, $amount = 0.0, $paymentDate = null, $cuchubalId = 0, $status = '')
     {
         $this->id = $id;
         $this->participantId = $participantId;
         $this->amount = $amount;
         $this->paymentDate = $paymentDate;
+        $this->status = $status;
         $this->cuchubalId = $cuchubalId;
     }
 
@@ -65,15 +68,26 @@ class Payment
         $this->cuchubalId = $cuchubalId;
     }
 
+    // Getters y Setters para status
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
     // Métodos
     public function save()
     {
         if ($this->id == 0) {
-            $sql = "INSERT INTO payments (participant_id, amount, date, cuchubal_id) VALUES (?, ?, ?, ?)";
-            $this->id = dbQueryPreparada($sql, [$this->participantId, $this->amount, $this->paymentDate, $this->cuchubalId]);
+            $sql = "INSERT INTO payments (participant_id, amount, date, cuchubal_id, status) VALUES (?, ?, ?, ?, ?)";
+            $this->id = dbQueryPreparada($sql, [$this->participantId, $this->amount, $this->paymentDate, $this->cuchubalId, $this->status]);
         } else {
-            $sql = "UPDATE payments SET participant_id = ?, amount = ?, date = ?, cuchubal_id = ? WHERE id = ?";
-            dbQueryPreparada($sql, [$this->participantId, $this->amount, $this->paymentDate, $this->cuchubalId, $this->id]);
+            $sql = "UPDATE payments SET participant_id = ?, amount = ?, date = ?, cuchubal_id = ?, status = ? WHERE id = ?";
+            dbQueryPreparada($sql, [$this->participantId, $this->amount, $this->paymentDate, $this->cuchubalId, $this->status, $this->id]);
         }
     }
 

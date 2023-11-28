@@ -174,7 +174,13 @@ $router->map('GET', '/payments/participant/[i:participantId]', function ($partic
 $router->map('POST', '/payments', function () use ($paymentService) {
     isAuthenticated();
     $data = getRequestData();
-    $paymentId = $paymentService->createPayment($data['participantId'], $data['amount'], $data['paymentDate'], $data['cuchubalId']);
+    $paymentId = $paymentService->createPayment(
+        $data['participantId'],
+        $data['amount'],
+        $data['paymentDate'],
+        $data['cuchubalId'],
+        $data['status'] // Añadir el campo status
+    );
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Pago procesado', 'paymentId' => $paymentId]);
 });
@@ -182,7 +188,14 @@ $router->map('POST', '/payments', function () use ($paymentService) {
 $router->map('PUT', '/payments/[i:id]', function ($id) use ($paymentService) {
     isAuthenticated();
     $data = getRequestData();
-    $paymentService->updatePayment($id, $data['participantId'], $data['amount'], $data['paymentDate'], $data['cuchubalId']);
+    $paymentService->updatePayment(
+        $id,
+        $data['participantId'],
+        $data['amount'],
+        $data['paymentDate'],
+        $data['cuchubalId'],
+        $data['status'] // Añadir el campo status
+    );
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Pago actualizado']);
 });

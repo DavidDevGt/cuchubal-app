@@ -5,13 +5,13 @@ class PaymentService
 {
 
     // Crear un nuevo pago
-    public function createPayment($participantId, $amount, $paymentDate, $cuchubalId)
+    public function createPayment($participantId, $amount, $paymentDate, $cuchubalId, $status)
     {
-        $payment = new Payment(0, $participantId, $amount, $paymentDate, $cuchubalId);
+        $payment = new Payment(0, $participantId, $amount, $paymentDate, $cuchubalId, $status);
         $payment->save();
         return $payment->getId();
     }
-
+    
     // Obtener un pago por ID
     public function getPaymentById($id)
     {
@@ -19,9 +19,9 @@ class PaymentService
     }
 
     // Actualizar un pago existente
-    public function updatePayment($id, $participantId, $amount, $paymentDate, $cuchubalId)
+    public function updatePayment($id, $participantId, $amount, $paymentDate, $cuchubalId, $status)
     {
-        $payment = new Payment($id, $participantId, $amount, $paymentDate, $cuchubalId);
+        $payment = new Payment($id, $participantId, $amount, $paymentDate, $cuchubalId, $status);
         $payment->save();
     }
 
