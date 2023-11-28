@@ -26,6 +26,28 @@ $(document).ready(function () {
                     <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
+            <tr>
+                <td>Nombre Ejemplo</td>
+                <td>Contacto Ejemplo</td>
+                <td>Dirección Ejemplo</td>
+                <td>Método de Pago Ejemplo</td>
+                <td><span class="badge bg-warning">Parcial</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td>Nombre Ejemplo</td>
+                <td>Contacto Ejemplo</td>
+                <td>Dirección Ejemplo</td>
+                <td>Método de Pago Ejemplo</td>
+                <td><span class="badge bg-danger">No pagado</span></td>
+                <td>
+                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
         `);
   }
 });
