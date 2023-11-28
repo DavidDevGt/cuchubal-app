@@ -1,0 +1,8 @@
+/* Puedes personalizar estilos específicos para la tabla aquí si lo deseas */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.btn-outline-primary {
+    margin: 0 5px;
+}
