@@ -1,8 +1,11 @@
-/* Puedes personalizar estilos específicos para la tabla aquí si lo deseas */
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, .05);
+#tablaParticipantes tr td {
+  vertical-align: middle;
 }
 
-.btn-outline-primary {
-    margin: 0 5px;
+#tablaParticipantes .btn {
+  margin: 0 2px;
+}
+
+.badge {
+  font-size: 0.8em;
 }
