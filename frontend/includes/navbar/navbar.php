@@ -3,10 +3,14 @@
     <!-- Logo -->
     <a class="navbar-brand" href="#">
       <img
-        src="https://preview.webpixels.io/web/img/logos/clever-primary.svg"
+        src="img/logo1.png"
         class="h-8"
-        alt="..."
+        alt="Cuchubal App Logo"
+        height="50"
+        width="50"
+        loading="lazy"
       />
+      Cuchubal App
     </a>
     <!-- Navbar toggle -->
     <button
@@ -25,20 +29,20 @@
       <!-- Nav -->
       <div class="navbar-nav mx-lg-auto">
         <a class="nav-item nav-link active" href="#" aria-current="page"
-          >Home</a
+          >Dashboard</a
         >
-        <a class="nav-item nav-link" href="#">Product</a>
-        <a class="nav-item nav-link" href="#">Features</a>
-        <a class="nav-item nav-link" href="#">Pricing</a>
+        <a class="nav-item nav-link" href="#">Cuchubales</a>
+        <a class="nav-item nav-link" href="#">Pagos</a>
+        <a class="nav-item nav-link" href="#">Participantes</a>
       </div>
       <!-- Right navigation -->
       <div class="navbar-nav ms-lg-4">
-        <a class="nav-item nav-link" href="#">Sign in</a>
+        <a class="nav-item nav-link" href="#">Mi Perfil</a>
       </div>
       <!-- Action -->
       <div class="d-flex align-items-lg-center mt-3 mt-lg-0">
-        <a href="#" class="btn btn-sm btn-primary w-full w-lg-auto">
-          Register
+        <a href="#" class="btn btn-sm btn-danger w-full w-lg-auto">
+          Cerrar Sesión
         </a>
       </div>
     </div>
