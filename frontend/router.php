@@ -15,8 +15,20 @@ $router->map('GET', '/login', function() {
     require __DIR__ . '/pages/login.php';
 });
 
+$router->map('GET', '/registro', function() {
+    require __DIR__ . '/pages/register.php';
+});
+
 $router->map('GET', '/cuchubales', function() {
     require __DIR__ . '/pages/cuchubales.php';
+});
+
+$router->map('GET', '/usuarios', function() {
+    require __DIR__ . '/pages/users.php';
+});
+
+$router->map('GET', '/participantes', function() {
+    require __DIR__ . '/pages/participants.php';
 });
 
 // ... más rutas ...
