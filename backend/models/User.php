@@ -1,41 +1,72 @@
 <?php
 require_once __DIR__ . '/../db/database.php';
 
-class User {
+class User
+{
     public $id;
     public $username;
     public $password;
+    public $active;
+    public $created_at;
+    public $updated_at;
 
-    public function __construct($id = 0, $username = '', $password = '') {
+
+    public function __construct($id = 0, $username = '', $password = '', $active = 1, $created_at = null, $updated_at = null)
+    {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
+        $this->active = $active; // Nuevo
+        $this->created_at = $created_at; // Nuevo
+        $this->updated_at = $updated_at; // Nuevo
     }
 
     // Getters y setters
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+
     // Setters
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
     // Métodos de Base de Datos
-    public function save() {
+    public function save()
+    {
         if ($this->id == 0) {
             $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
             $this->id = dbQueryPreparada($sql, [$this->username, $this->password]);
@@ -45,7 +76,8 @@ class User {
         }
     }
 
-    public static function getById($id) {
+    public static function getById($id)
+    {
         $sql = "SELECT * FROM users WHERE id = ?";
         $result = dbQueryPreparada($sql, [$id]);
         if ($row = dbFetchAssoc($result)) {
@@ -54,17 +86,19 @@ class User {
         return null;
     }
 
-    public static function getAll() {
+    public static function getAll()
+    {
         $sql = "SELECT * FROM users";
         $result = dbQuery($sql);
         $users = [];
         while ($row = dbFetchAssoc($result)) {
-            $users[] = new User($row['id'], $row['username'], $row['password']);
+            $users[] = new User($row['id'], $row['username'], $row['password'], $row['active'], $row['created_at'], $row['updated_at']);
         }
         return $users;
     }
 
-    public function delete() {
+    public function delete()
+    {
         $sql = "UPDATE users SET active = 0 WHERE id = ?";
         dbQueryPreparada($sql, [$this->id]);
     }

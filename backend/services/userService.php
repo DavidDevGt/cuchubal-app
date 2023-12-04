@@ -19,7 +19,18 @@ class UserService
 
     public function getAllUsers()
     {
-        return User::getAll();
+        $users = User::getAll();
+        $usersData = array_map(function ($user) {
+            return [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                // No es necesario devolver la contraseña
+                'active' => $user->getActive(),
+                'created_at' => $user->getCreatedAt(),
+                'updated_at' => $user->getUpdatedAt()
+            ];
+        }, $users);
+        return $usersData;
     }
 
     public function updateUser($id, $username, $password)
