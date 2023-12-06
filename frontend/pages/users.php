@@ -143,8 +143,6 @@
     // Para limpiar los modales al cerrarlos
     $('#crearUsuarioModal, #editarUsuarioModal').on('hidden.bs.modal', function() {
       $(this).find('form').trigger('reset');
-      $(this).find('.fa-eye-slash').removeClass('fa-eye-slash').addClass('fa-eye');
-      $(this).find('input[type="text"]').attr('type', 'password');
     });
 
 
