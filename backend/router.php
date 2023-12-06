@@ -102,18 +102,19 @@ $router->map('GET', '/users/[i:id]', function ($id) use ($userService) {
 
 $router->map('POST', '/users', function () use ($userService) {
     $data = getRequestData();
-    $userId = $userService->createUser($data['username'], $data['password']);
+    $userId = $userService->createUser($data['username'], $data['password'], isset($data['active']) ? $data['active'] : 1);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Usuario creado', 'userId' => $userId]);
 });
 
 $router->map('PUT', '/users/[i:id]', function ($id) use ($userService) {
-    //isAuthenticated();
+    // isAuthenticated(); // Descomentar para producción
     $data = getRequestData();
-    $userService->updateUser($id, $data['username'], $data['password']);
+    $userService->updateUser($id, $data['username'], $data['password'], $data['active']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Información de usuario actualizada']);
 });
+
 
 $router->map('DELETE', '/users/[i:id]', function ($id) use ($userService) {
     //isAuthenticated();
