@@ -64,17 +64,25 @@ class User
         $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
     // Métodos de Base de Datos
     public function save()
     {
         if ($this->id == 0) {
-            $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-            $this->id = dbQueryPreparada($sql, [$this->username, $this->password]);
+            // Creación de un nuevo usuario
+            $sql = "INSERT INTO users (username, password, active) VALUES (?, ?, ?)";
+            $this->id = dbQueryPreparada($sql, [$this->username, $this->password, $this->active]);
         } else {
-            $sql = "UPDATE users SET username = ?, password = ? WHERE id = ?";
-            dbQueryPreparada($sql, [$this->username, $this->password, $this->id]);
+            // Actualización de un usuario existente
+            $sql = "UPDATE users SET username = ?, password = ?, active = ? WHERE id = ?";
+            dbQueryPreparada($sql, [$this->username, $this->password, $this->active, $this->id]);
         }
     }
+
 
     public static function getById($id)
     {

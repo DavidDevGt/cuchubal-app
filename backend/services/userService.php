@@ -3,11 +3,12 @@ require_once __DIR__ . '/../models/User.php';
 
 class UserService
 {
-    public function createUser($username, $password)
-    {
+    public function createUser($username, $password, $active = 1)
+    { // Añade un valor por defecto para 'active'
         $user = new User();
         $user->setUsername($username);
         $user->setPassword($password);
+        $user->setActive($active);
         $user->save();
         return $user->getId();
     }
@@ -33,12 +34,13 @@ class UserService
         return $usersData;
     }
 
-    public function updateUser($id, $username, $password)
+    public function updateUser($id, $username, $password, $active)
     {
         $user = User::getById($id);
         if ($user) {
             $user->setUsername($username);
             $user->setPassword($password);
+            $user->setActive($active); // Asegúrate de tener este setter en tu clase User.
             $user->save();
         }
     }
