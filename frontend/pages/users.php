@@ -4,7 +4,7 @@
     <button class="btn btn-sm btn-success mb-1" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal">Agregar Usuario</button>
   </div>
   <div class="table-responsive">
-    <table class="table table-striped">
+    <table class="table table-striped table-bordered">
       <thead class="table-dark">
         <tr class="text-center">
           <th>ID</th>
