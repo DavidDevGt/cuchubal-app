@@ -120,7 +120,7 @@ $router->map('DELETE', '/users/[i:id]', function ($id) use ($userService) {
     //isAuthenticated();
     $userService->deleteUser($id);
     header('Content-Type: application/json');
-    echo json_encode(['message' => 'Usuario eliminado']);
+    echo json_encode(['message' => 'Usuario desactivado']);
 });
 
 // Login de usuarios
