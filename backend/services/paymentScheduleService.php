@@ -3,19 +3,18 @@ require_once __DIR__ . '/../models/PaymentSchedule.php';
 
 class PaymentScheduleService
 {
-
     // Crear nueva programación de pago
-    public function createPaymentSchedule($cuchubalId, $participantId, $scheduledDate, $amount, $status)
+    public function createPaymentSchedule($cuchubalId, $participantId, $scheduledDate, $amount, $status, $notes, $paymentDate, $paymentReference, $paymentMethod, $paymentConfirmed)
     {
-        $schedule = new PaymentSchedule(0, $cuchubalId, $participantId, $scheduledDate, $amount, $status);
+        $schedule = new PaymentSchedule(0, $cuchubalId, $participantId, $scheduledDate, $amount, $status, $notes, $paymentDate, $paymentReference, $paymentMethod, $paymentConfirmed);
         $schedule->save();
         return $schedule->getId();
     }
 
     // Actualizar programación de pago existente
-    public function updatePaymentSchedule($id, $cuchubalId, $participantId, $scheduledDate, $amount, $status)
+    public function updatePaymentSchedule($id, $cuchubalId, $participantId, $scheduledDate, $amount, $status, $notes, $paymentDate, $paymentReference, $paymentMethod, $paymentConfirmed)
     {
-        $schedule = new PaymentSchedule($id, $cuchubalId, $participantId, $scheduledDate, $amount, $status);
+        $schedule = new PaymentSchedule($id, $cuchubalId, $participantId, $scheduledDate, $amount, $status, $notes, $paymentDate, $paymentReference, $paymentMethod, $paymentConfirmed);
         $schedule->save();
     }
 
@@ -37,13 +36,7 @@ class PaymentScheduleService
     // Listar programaciones de pago de un cuchubal específico
     public function listPaymentSchedulesByCuchubal($cuchubalId)
     {
-        $sql = "SELECT * FROM payment_schedule WHERE cuchubal_id = ?";
-        $result = dbQueryPreparada($sql, [$cuchubalId]);
-        $schedules = [];
-        while ($row = dbFetchAssoc($result)) {
-            $schedules[] = new PaymentSchedule($row['id'], $row['cuchubal_id'], $row['participant_id'], $row['scheduled_date'], $row['amount'], $row['status']);
-        }
-        return $schedules;
+        return PaymentSchedule::getAllByCuchubalId($cuchubalId);
     }
 
     // Actualizar el estado de una programación
@@ -64,7 +57,19 @@ class PaymentScheduleService
         $result = dbQueryPreparada($sql, [$cuchubalId, $status]);
         $schedules = [];
         while ($row = dbFetchAssoc($result)) {
-            $schedules[] = new PaymentSchedule($row['id'], $row['cuchubal_id'], $row['participant_id'], $row['scheduled_date'], $row['amount'], $row['status']);
+            $schedules[] = new PaymentSchedule(
+                $row['id'],
+                $row['cuchubal_id'],
+                $row['participant_id'],
+                $row['scheduled_date'],
+                $row['amount'],
+                $row['status'],
+                $row['notes'],
+                $row['payment_date'],
+                $row['payment_reference'],
+                $row['payment_method'],
+                $row['payment_confirmed']
+            );
         }
         return $schedules;
     }
@@ -88,7 +93,19 @@ class PaymentScheduleService
         $result = dbQueryPreparada($sql, [$participantId]);
         $history = [];
         while ($row = dbFetchAssoc($result)) {
-            $history[] = new PaymentSchedule($row['id'], $row['cuchubal_id'], $row['participant_id'], $row['scheduled_date'], $row['amount'], $row['status']);
+            $history[] = new PaymentSchedule(
+                $row['id'],
+                $row['cuchubal_id'],
+                $row['participant_id'],
+                $row['scheduled_date'],
+                $row['amount'],
+                $row['status'],
+                $row['notes'],
+                $row['payment_date'],
+                $row['payment_reference'],
+                $row['payment_method'],
+                $row['payment_confirmed']
+            );
         }
         return $history;
     }
