@@ -8,8 +8,10 @@ class Cuchubal
     public $description;
     public $amount;       // Nuevo campo para el monto total del cuchubal
     public $startDate;    // Nuevo campo para la fecha de inicio del cuchubal
+    public $deadline; // Nuevo campo para la fecha límite del cuchubal
 
-    public function __construct($id = 0, $userId = 0, $name = '', $description = '', $amount = 0.0, $startDate = '')
+
+    public function __construct($id = 0, $userId = 0, $name = '', $description = '', $amount = 0.0, $startDate = '', $deadline = '')
     {
         $this->id = $id;
         $this->userId = $userId;
@@ -17,6 +19,7 @@ class Cuchubal
         $this->description = $description;
         $this->amount = $amount;
         $this->startDate = $startDate;
+        $this->deadline = $deadline;
     }
 
     // Getters y Setters
@@ -81,15 +84,25 @@ class Cuchubal
         $this->startDate = $value;
     }
 
+    public function getDeadline()
+    {
+        return $this->deadline;
+    }
+
+    public function setDeadline($value)
+    {
+        $this->deadline = $value;
+    }
+
     // Métodos
     public function save()
     {
         if ($this->id == 0) {
-            $sql = "INSERT INTO cuchubales (user_id, name, description, amount, start_date) VALUES (?, ?, ?, ?, ?)";
-            $this->id = dbQueryPreparada($sql, [$this->userId, $this->name, $this->description, $this->amount, $this->startDate]);
+            $sql = "INSERT INTO cuchubales (user_id, name, description, amount, start_date, deadline) VALUES (?, ?, ?, ?, ?, ?)";
+            $this->id = dbQueryPreparada($sql, [$this->userId, $this->name, $this->description, $this->amount, $this->startDate, $this->deadline]);
         } else {
-            $sql = "UPDATE cuchubales SET user_id = ?, name = ?, description = ?, amount = ?, start_date = ? WHERE id = ?";
-            dbQueryPreparada($sql, [$this->userId, $this->name, $this->description, $this->amount, $this->startDate, $this->id]);
+            $sql = "UPDATE cuchubales SET user_id = ?, name = ?, description = ?, amount = ?, start_date = ?, deadline = ? WHERE id = ?";
+            dbQueryPreparada($sql, [$this->userId, $this->name, $this->description, $this->amount, $this->startDate, $this->deadline, $this->id]);
         }
     }
 
@@ -98,7 +111,7 @@ class Cuchubal
         $sql = "SELECT * FROM cuchubales WHERE id = ?";
         $result = dbQueryPreparada($sql, [$id]);
         if ($row = dbFetchAssoc($result)) {
-            return new Cuchubal($row['id'], $row['user_id'], $row['name'], $row['description']);
+            return new Cuchubal($row['id'], $row['user_id'], $row['name'], $row['description'], $row['amount'], $row['start_date'], $row['deadline']);
         }
         return null;
     }
@@ -109,14 +122,16 @@ class Cuchubal
         $result = dbQueryPreparada($sql, [$userId]);
         $cuchubales = [];
         while ($row = dbFetchAssoc($result)) {
-            $cuchubales[] = new Cuchubal($row['id'], $row['user_id'], $row['name'], $row['description']);
+            $cuchubales[] = new Cuchubal($row['id'], $row['user_id'], $row['name'], $row['description'], $row['amount'], $row['start_date'], $row['deadline']);
         }
         return $cuchubales;
     }
+    
 
     public function delete()
     {
-        $sql = "DELETE FROM cuchubales WHERE id = ?";
+        $sql = "UPDATE cuchubales SET active = 0 WHERE id = ?";
         dbQueryPreparada($sql, [$this->id]);
     }
+    
 }

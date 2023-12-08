@@ -58,6 +58,7 @@ CREATE TABLE
         description TEXT,
         amount DECIMAL(10, 2),
         start_date DATE,
+        deadline DATE,
         active TINYINT (1) DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

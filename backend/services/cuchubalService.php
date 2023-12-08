@@ -5,9 +5,9 @@ class CuchubalService
 {
 
     // Crear un nuevo cuchubal
-    public function createCuchubal($userId, $name, $description, $amount, $startDate)
+    public function createCuchubal($userId, $name, $description, $amount, $startDate, $deadline)
     {
-        $cuchubal = new Cuchubal(0, $userId, $name, $description, $amount, $startDate);
+        $cuchubal = new Cuchubal(0, $userId, $name, $description, $amount, $startDate, $deadline);
         $cuchubal->save();
         return $cuchubal->getId();
     }
@@ -19,11 +19,12 @@ class CuchubalService
     }
 
     // Actualizar un cuchubal existente
-    public function updateCuchubal($id, $userId, $name, $description, $amount, $startDate)
+    public function updateCuchubal($id, $userId, $name, $description, $amount, $startDate, $deadline)
     {
-        $cuchubal = new Cuchubal($id, $userId, $name, $description, $amount, $startDate);
+        $cuchubal = new Cuchubal($id, $userId, $name, $description, $amount, $startDate, $deadline);
         $cuchubal->save();
     }
+    
     // Eliminar un cuchubal
     public function deleteCuchubal($id)
     {

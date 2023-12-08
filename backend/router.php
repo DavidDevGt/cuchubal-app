@@ -280,7 +280,7 @@ $router->map('GET', '/cuchubales/[i:id]', function ($id) use ($cuchubalService) 
 $router->map('POST', '/cuchubales', function () use ($cuchubalService) {
     //isAuthenticated();
     $data = getRequestData();
-    $cuchubalId = $cuchubalService->createCuchubal($data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate']);
+    $cuchubalId = $cuchubalService->createCuchubal($data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate'], $data['deadline']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Cuchubal creado', 'cuchubalId' => $cuchubalId]);
 });
@@ -288,7 +288,7 @@ $router->map('POST', '/cuchubales', function () use ($cuchubalService) {
 $router->map('PUT', '/cuchubales/[i:id]', function ($id) use ($cuchubalService) {
     //isAuthenticated();
     $data = getRequestData();
-    $cuchubalService->updateCuchubal($id, $data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate']);
+    $cuchubalService->updateCuchubal($id, $data['userId'], $data['name'], $data['description'], $data['amount'], $data['startDate'], $data['deadline']);
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Cuchubal actualizado']);
 });
