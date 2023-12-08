@@ -8,17 +8,20 @@
               <h3 class="card-title text-center text-gray-900 mb-4">Iniciar Sesión</h3>
               <form class="user" id="loginForm">
                 <div class="form-group">
-                  <label class="txt-lbl" for="email">Correo Electrónico</label>
-                  <input type="email" class="form-control form-control-user mt-2" id="email" placeholder="Ingresa tu correo electrónico" />
+                  <label class="txt-lbl" for="username">Nombre de Usuario</label>
+                  <input type="text" class="form-control form-control-user mt-2" id="username" placeholder="Ingresa tu nombre de usuario" />
                 </div>
                 <div class="form-group mt-3">
                   <label class="txt-lbl" for="password">Contraseña</label>
-                  <input type="password" class="form-control form-control-user mt-2" id="password" placeholder="Ingresa tu contraseña" />
+                  <div class="input-group">
+                    <input type="password" class="form-control form-control-user mt-2" id="password" placeholder="Ingresa tu contraseña" />
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary mt-2" type="button" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <!-- <div class="custom-control custom-checkbox small mt-3">
-                  <input type="checkbox" class="custom-control-input" id="rememberMe" />
-                  <label class="custom-control-label" for="rememberMe">Recuérdame</label>
-                </div> -->
                 <button type="submit" class="btn btn-primary btn-user btn-block mt-4">Iniciar sesión</button>
               </form>
             </div>
@@ -28,6 +31,7 @@
     </div>
   </div>
 </div>
+
 <style>
   /* Estilos para la tarjeta de login */
   .card {
@@ -60,21 +64,27 @@
     background-color: #3490dc;
   }
 </style>
+
 <script>
-  // Añade un evento 'submit' al formulario de login
   document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Previene el envío por defecto
 
-    // Obtiene valores de los campos del formulario
-    var email = document.getElementById('email').value;
+    var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
-    // Realiza la validación de los campos
-    if (email === '' || password === '') {
+    if (username === '' || password === '') {
       alert('Por favor, rellene todos los campos.');
     } else {
-      // Aquí se puede añadir más lógica, como la verificación del usuario
-      console.log('Formulario enviado:', email, password);
+      console.log('Formulario enviado:', username, password);
     }
+  });
+
+  // Manejar la visualización de la contraseña
+  document.getElementById('togglePassword').addEventListener('click', function(e) {
+    const password = document.getElementById('password');
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.children[0].classList.toggle('fas fa-eye');
+    this.children[0].classList.toggle('fas fa-eye-slash');
   });
 </script>
