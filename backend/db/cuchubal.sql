@@ -91,3 +91,10 @@ CREATE TABLE
         FOREIGN KEY (cuchubal_id) REFERENCES cuchubales (id),
         FOREIGN KEY (participant_id) REFERENCES participants (id)
     );
+
+ALTER TABLE payment_schedule 
+ADD COLUMN notes TEXT,
+ADD COLUMN payment_date DATE,
+ADD COLUMN payment_reference VARCHAR(255),
+ADD COLUMN payment_method VARCHAR(50),
+ADD COLUMN payment_confirmed TINYINT(1) DEFAULT 0,
