@@ -108,7 +108,7 @@ class Cuchubal
 
     public static function getById($id)
     {
-        $sql = "SELECT * FROM cuchubales WHERE id = ?";
+        $sql = "SELECT * FROM cuchubales WHERE id = ? AND active = 1";
         $result = dbQueryPreparada($sql, [$id]);
         if ($row = dbFetchAssoc($result)) {
             return new Cuchubal($row['id'], $row['user_id'], $row['name'], $row['description'], $row['amount'], $row['start_date'], $row['deadline']);
@@ -118,7 +118,7 @@ class Cuchubal
 
     public static function getAllByUserId($userId)
     {
-        $sql = "SELECT * FROM cuchubales WHERE user_id = ?";
+        $sql = "SELECT * FROM cuchubales WHERE user_id = ? AND active = 1";
         $result = dbQueryPreparada($sql, [$userId]);
         $cuchubales = [];
         while ($row = dbFetchAssoc($result)) {
