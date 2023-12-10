@@ -15,5 +15,10 @@
 <script src="js/app.js"></script>
 
 <!-- SCRIPTS DE LA PÁGINA -->
+
+<!-- JSPDF -->
 <!-- <script src="js/libs/jspdf.umd.min.js"></script> -->
+
+
+<!-- FULL CALENDAR -->
 <!-- <script src="js/libs/index.global.min.js"></script> -->
