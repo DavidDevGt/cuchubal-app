@@ -1,12 +1,18 @@
 <?php $userId = $_SESSION['user_id'] ?? 0; ?>
 
 <div class="container mt-5">
-  <h1>Cuchubales</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Cuchubales</h1>
+    <button id="btnCrearCuchubal" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cuchubalModal" style="display: none;">
+      Crear Cuchubal
+    </button>
+  </div>
   <div id="userId" style="display: none;" data-userid="<?php echo htmlspecialchars($userId); ?>"></div>
   <div class="row mt-5" id="lista-cuchubales">
     <!-- Las tarjetas de cuchubales se cargarán aquí -->
   </div>
 </div>
+
 
 <!-- Modal para Crear/Editar Cuchubal -->
 <div class="modal fade" id="cuchubalModal" tabindex="-1" aria-labelledby="cuchubalModalLabel" aria-hidden="true">
@@ -17,12 +23,33 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Formulario para Crear/Editar Cuchubal -->
-        <!-- ... -->
+        <form id="formCuchubal">
+          <input type="hidden" id="cuchubalId">
+          <div class="mb-3">
+            <label for="nombreCuchubal" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombreCuchubal" required>
+          </div>
+          <div class="mb-3">
+            <label for="descripcionCuchubal" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcionCuchubal" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="montoCuchubal" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="montoCuchubal" required>
+          </div>
+          <div class="mb-3">
+            <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+            <input type="date" class="form-control" id="fechaInicio" required>
+          </div>
+          <div class="mb-3">
+            <label for="fechaFin" class="form-label">Fecha de Finalización</label>
+            <input type="date" class="form-control" id="fechaFin" required>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Guardar Cambios</button>
+        <button type="button" class="btn btn-primary" onclick="guardarCuchubal()">Guardar Cambios</button>
       </div>
     </div>
   </div>
@@ -32,7 +59,7 @@
 <script>
   function cargarCuchubales() {
     // var userId = $('#userId').data('userid');
-    var userId = 1;
+    var userId = 2;
     $.ajax({
       url: 'http://localhost/cuchubal-app/backend/cuchubales',
       type: 'GET',
@@ -45,9 +72,10 @@
           $('#lista-cuchubales').append(`
           <div class="empty-state">
             <p>Vaya, parece que no hay nada aquí.</p>
-            <button id="crearCuchubal" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cuchubalModal">Crear Cuchubal</button>
+            <button id="crearCuchubal" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cuchubalModal">Crear Cuchubal</button>
           </div>
         `);
+          $('#btnCrearCuchubal').hide();
         } else {
           cuchubales.forEach(function(cuchubal) {
             var fechaInicio = dayjs(cuchubal.startDate).format('DD/MM/YYYY');
@@ -64,16 +92,16 @@
                   <div class="card-info">
                     <span class="text-muted">Inicio: ${fechaInicio}</span><br>
                     <span class="text-muted">Fin: ${fechaFin}</span><br>
-                    <span class="amount">Monto: Q${cuchubal.amount}</span>
+                    <span class="amount">Monto: ${formatToQuetzales(cuchubal.amount)}</span>
                   </div>
                   <div class="d-flex justify-content-center align-items-center mt-3">
                     <button class="btn btn-info m-1" data-id="${cuchubal.id}" data-toggle="tooltip" data-placement="top" title="Ver Detalles">
                       <i class="fas fa-info-circle"></i>
                     </button>
-                    <button class="btn btn-success m-1" ${disabledEdit} data-id="${cuchubal.id}" data-bs-toggle="modal" data-bs-target="#cuchubalModal" data-toggle="tooltip" data-placement="top" title="Editar">
+                    <button class="btn btn-success m-1 editarCuchubal" data-id="${cuchubal.id}" data-bs-toggle="modal" data-bs-target="#cuchubalModal" title="Editar">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger m-1" data-id="${cuchubal.id}" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                    <button class="btn btn-danger m-1" data-id="${cuchubal.id}" onclick="eliminarCuchubal(${cuchubal.id})" title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </button>
                   </div>
@@ -83,6 +111,7 @@
           `;
             $('#lista-cuchubales').append(tarjetaCuchubal);
           });
+          $('#btnCrearCuchubal').show();
         }
         $('[data-toggle="tooltip"]').tooltip();
       },
@@ -137,7 +166,8 @@
       type: metodo,
       contentType: 'application/json',
       data: JSON.stringify({
-        userId: $('#userId').data('userid'),
+        //userId: $('#userId').data('userid'),
+        userId: 2,
         name: nombre,
         description: descripcion,
         amount: monto,
@@ -154,12 +184,41 @@
     });
   }
 
+  function eliminarCuchubal(id) {
+    Swal.fire({
+      title: '¿Estás seguro de querer eliminar este cuchubal?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `http://localhost/cuchubal-app/backend/cuchubales/${id}`,
+          type: 'DELETE',
+          success: function() {
+            cargarCuchubales();
+          },
+          error: function(error) {
+            console.error('Error al eliminar el cuchubal:', error);
+          }
+        });
+      }
+    });
+  }
+
   $(document).ready(function() {
     cargarCuchubales();
   });
 
-  $('#crearCuchubal').click(function() {
-    // Implementar la lógica para llevar al usuario a la pantalla de creación de un nuevo cuchubal.
+  $('#btnCrearCuchubal').click(function() {
+    abrirModalCuchubal(0);
+  });
+
+  $(document).on('click', '.editarCuchubal', function() {
+    var cuchubalId = $(this).data('id');
+    abrirModalCuchubal(cuchubalId);
   });
 </script>
 
