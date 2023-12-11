@@ -322,11 +322,11 @@ $router->map('POST', '/payment-schedule', function () use ($paymentScheduleServi
         $data['scheduledDate'],
         $data['amount'],
         $data['status'],
-        $data['notes'],            // Nuevo campo
-        $data['paymentDate'],      // Nuevo campo
-        $data['paymentReference'], // Nuevo campo
-        $data['paymentMethod'],    // Nuevo campo
-        $data['paymentConfirmed']  // Nuevo campo
+        $data['notes'],
+        $data['paymentDate'],
+        $data['paymentReference'],
+        $data['paymentMethod'],
+        $data['paymentConfirmed']
     );
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Programación de pago creada', 'scheduleId' => $scheduleId]);
@@ -342,11 +342,11 @@ $router->map('PUT', '/payment-schedule/[i:id]', function ($id) use ($paymentSche
         $data['scheduledDate'],
         $data['amount'],
         $data['status'],
-        $data['notes'],            // Nuevo campo
-        $data['paymentDate'],      // Nuevo campo
-        $data['paymentReference'], // Nuevo campo
-        $data['paymentMethod'],    // Nuevo campo
-        $data['paymentConfirmed']  // Nuevo campo
+        $data['notes'],
+        $data['paymentDate'],
+        $data['paymentReference'],
+        $data['paymentMethod'],
+        $data['paymentConfirmed']
     );
     header('Content-Type: application/json');
     echo json_encode(['message' => 'Programación de pago actualizada']);
@@ -380,7 +380,7 @@ $router->map('GET', '/payment-schedule/participant/[i:participantId]/history', f
 });
 
 $router->map('GET', '/user/[i:userId]/payment-schedule[/:cuchubalId]?', function ($userId, $cuchubalId = null) use ($paymentScheduleService) {
-    //isAuthenticated(); // Descomentar y ajustar para producción
+    //isAuthenticated();
     header('Content-Type: application/json');
     echo json_encode($paymentScheduleService->listPaymentSchedulesByUser($userId, $cuchubalId));
 });
