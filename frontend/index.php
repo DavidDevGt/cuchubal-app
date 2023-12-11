@@ -33,6 +33,11 @@
       return texto.toUpperCase();
     }
 
+    //Convertir primera letra de cada palabra a mayúscula
+    function upperFirstChar(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
     // Validar que la fecha de inicio sea menor a la fecha de fin
     function validarFechasInicioFin(fechaInicio, fechaFin) {
       const fechaInicioObj = new Date(fechaInicio);
