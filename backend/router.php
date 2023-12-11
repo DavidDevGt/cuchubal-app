@@ -379,10 +379,10 @@ $router->map('GET', '/payment-schedule/participant/[i:participantId]/history', f
     echo json_encode($paymentScheduleService->getPaymentHistoryByParticipant($participantId));
 });
 
-$router->map('GET', '/user/[i:userId]/payment-schedule', function ($userId) use ($paymentScheduleService) {
+$router->map('GET', '/user/[i:userId]/payment-schedule[/:cuchubalId]?', function ($userId, $cuchubalId = null) use ($paymentScheduleService) {
     //isAuthenticated(); // Descomentar y ajustar para producción
     header('Content-Type: application/json');
-    echo json_encode($paymentScheduleService->listPaymentSchedulesByUser($userId));
+    echo json_encode($paymentScheduleService->listPaymentSchedulesByUser($userId, $cuchubalId));
 });
 
 // Manejar la solicitud
