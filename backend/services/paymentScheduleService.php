@@ -111,15 +111,22 @@ class PaymentScheduleService
     }
 
     // Función para obtener programaciones de pago de los cuchubales de un usuario
-    public function listPaymentSchedulesByUser($userId)
+    public function listPaymentSchedulesByUser($userId, $cuchubalId = null)
     {
-        $sql = "SELECT ps.* FROM payment_schedule ps 
-                    JOIN cuchubales c ON ps.cuchubal_id = c.id 
-                    WHERE c.user_id = ? AND ps.active = 1";
-        $result = dbQueryPreparada($sql, [$userId]);
+        $sql = "SELECT ps.*, c.name as cuchubalName, p.name as participantName 
+                FROM payment_schedule ps 
+                JOIN cuchubales c ON ps.cuchubal_id = c.id 
+                JOIN participants p ON ps.participant_id = p.id
+                WHERE c.user_id = ? AND ps.active = 1";
+        if ($cuchubalId) {
+            $sql .= " AND ps.cuchubal_id = ?";
+            $result = dbQueryPreparada($sql, [$userId, $cuchubalId]);
+        } else {
+            $result = dbQueryPreparada($sql, [$userId]);
+        }
         $schedules = [];
         while ($row = dbFetchAssoc($result)) {
-            $schedules[] = new PaymentSchedule(
+            $schedule = new PaymentSchedule(
                 $row['id'],
                 $row['cuchubal_id'],
                 $row['participant_id'],
@@ -132,6 +139,10 @@ class PaymentScheduleService
                 $row['payment_method'],
                 $row['payment_confirmed']
             );
+            // Añadir los nombres a la instancia de PaymentSchedule
+            $schedule->cuchubalName = $row['cuchubalName'];
+            $schedule->participantName = $row['participantName'];
+            $schedules[] = $schedule;
         }
         return $schedules;
     }

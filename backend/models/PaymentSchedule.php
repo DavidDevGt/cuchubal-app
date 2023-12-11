@@ -14,9 +14,11 @@ class PaymentSchedule
     public $paymentReference;
     public $paymentMethod;
     public $paymentConfirmed;
+    public $cuchubalName;
+    public $participantName;
 
     // Constructor
-    public function __construct($id = 0, $cuchubalId = 0, $participantId = 0, $scheduledDate = '', $amount = 0.0, $status = '', $notes = '', $paymentDate = null, $paymentReference = '', $paymentMethod = '', $paymentConfirmed = 0)
+    public function __construct($id = 0, $cuchubalId = 0, $participantId = 0, $scheduledDate = '', $amount = 0.0, $status = '', $notes = '', $paymentDate = null, $paymentReference = '', $paymentMethod = '', $paymentConfirmed = 0, $cuchubalName = '', $participantName = '')
     {
         $this->id = $id;
         $this->cuchubalId = $cuchubalId;
@@ -29,6 +31,8 @@ class PaymentSchedule
         $this->paymentReference = $paymentReference;
         $this->paymentMethod = $paymentMethod;
         $this->paymentConfirmed = $paymentConfirmed;
+        $this->cuchubalName = $cuchubalName;
+        $this->participantName = $participantName;
     }
 
     // Getters y setters
