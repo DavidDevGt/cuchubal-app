@@ -94,7 +94,7 @@
     // Cargar usuarios desde el backend y mostrarlos en la tabla
     function cargarUsuarios() {
       $.ajax({
-        url: 'http://localhost/cuchubal-app/backend/users',
+        url: '../backend/users',
         type: 'GET',
         success: function(usuarios) {
           $('#tabla-usuarios').empty(); // Limpiar la tabla antes de añadir nuevos datos
@@ -158,7 +158,7 @@
     // Función para crear el usuario en el backend
     function crearUsuario(username, password) {
       $.ajax({
-        url: 'http://localhost/cuchubal-app/backend/users',
+        url: '../backend/users',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -203,7 +203,7 @@
     // Función para actualizar el usuario en el backend
     function actualizarUsuario(id, username, password, active) {
       $.ajax({
-        url: `http://localhost/cuchubal-app/backend/users/${id}`,
+        url: `../backend/users/${id}`,
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -242,7 +242,7 @@
     // Función para eliminar el usuario en el backend
     function eliminarUsuario(id) {
       $.ajax({
-        url: `http://localhost/cuchubal-app/backend/users/${id}`,
+        url: `../backend/users/${id}`,
         type: 'DELETE',
         success: function(response) {
           console.log(response);

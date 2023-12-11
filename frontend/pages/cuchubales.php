@@ -1,4 +1,7 @@
-<?php $userId = $_SESSION['user_id'] ?? 0; ?>
+<?php
+$userId = $_SESSION['user_id'] ?? 0;
+$userIdEncoded = base64_encode($userId);
+?>
 
 <div class="container mt-5">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -7,7 +10,7 @@
       Crear Cuchubal
     </button>
   </div>
-  <div id="userId" style="display: none;" data-userid="<?php echo htmlspecialchars($userId); ?>"></div>
+  <div id="userId" style="display: none;" data-userid="<?php echo htmlspecialchars($userIdEncoded); ?>"></div>
   <div class="row mt-5" id="lista-cuchubales">
     <!-- Las tarjetas de cuchubales se cargarán aquí -->
   </div>
@@ -57,11 +60,15 @@
 
 
 <script>
+  function decodificarBase64(valorCodificado) {
+    return atob(valorCodificado);
+  }
+
   function cargarCuchubales() {
     // var userId = $('#userId').data('userid');
     var userId = 2;
     $.ajax({
-      url: 'http://localhost/cuchubal-app/backend/cuchubales',
+      url: '../backend/cuchubales',
       type: 'GET',
       data: {
         userId: userId
@@ -88,10 +95,10 @@
                 <img src="img/modulos/cuchubales.png" alt="${cuchubal.name}" class="card-image">
                 <div class="card-body">
                   <h5 class="card-title">${cuchubal.name}</h5>
-                  <p class="card-text">${cuchubal.description}</p>
+                  <p class="card-text">${cuchubal.description.substring(0, 100)}...</p>
                   <div class="card-info">
-                    <span class="text-muted">Inicio: ${fechaInicio}</span><br>
-                    <span class="text-muted">Fin: ${fechaFin}</span><br>
+                    <span class="text-muted">Fecha de Inicio: ${fechaInicio}</span><br>
+                    <span class="text-muted">Fecha Final: ${fechaFin}</span><br>
                     <span class="amount">Monto: ${formatToQuetzales(cuchubal.amount)}</span>
                   </div>
                   <div class="d-flex justify-content-center align-items-center mt-3">
@@ -129,7 +136,7 @@
     } else {
       // Cargar datos del cuchubal para editar
       $.ajax({
-        url: `http://localhost/cuchubal-app/backend/cuchubales/${id}`,
+        url: `../backend/cuchubales/${id}`,
         type: 'GET',
         success: function(data) {
           $('#nombreCuchubal').val(data.name);
@@ -158,8 +165,8 @@
 
     var metodo = id ? 'PUT' : 'POST';
     var url = id ?
-      `http://localhost/cuchubal-app/backend/cuchubales/${id}` :
-      'http://localhost/cuchubal-app/backend/cuchubales';
+      `../backend/cuchubales/${id}` :
+      '../backend/cuchubales';
 
     $.ajax({
       url: url,
@@ -195,7 +202,7 @@
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: `http://localhost/cuchubal-app/backend/cuchubales/${id}`,
+          url: `../backend/cuchubales/${id}`,
           type: 'DELETE',
           success: function() {
             cargarCuchubales();
@@ -209,6 +216,9 @@
   }
 
   $(document).ready(function() {
+    // Cuando descomentes esto, recuerda revisar todas las referencias a userId, (HardCoding para pruebas)
+    // var userIdCodificado = $('#userId').data('userid');
+    // var userId = decodificarBase64(userIdCodificado);
     cargarCuchubales();
   });
 
