@@ -31,8 +31,8 @@ $router->map('GET', '/participantes', function() {
     require __DIR__ . '/pages/participants.php';
 });
 
-$router->map('GET', '/calendario', function() {
-    require __DIR__ . '/pages/calendar.php';
+$router->map('GET', '/calendario-pagos', function() {
+    require __DIR__ . '/pages/calendar_payments.php';
 });
 
 // ... más rutas ...
