@@ -31,6 +31,10 @@ $router->map('GET', '/participantes', function() {
     require __DIR__ . '/pages/participants.php';
 });
 
+$router->map('GET', '/calendario', function() {
+    require __DIR__ . '/pages/calendar.php';
+});
+
 // ... más rutas ...
 
 $match = $router->match();
