@@ -1,10 +1,44 @@
 #calendar-container {
   margin: 0 auto;
   padding: 40px;
-  max-width: 900px;
 }
 
 #calendar {
   max-width: 100%;
   margin: 0 auto;
+}
+
+.fc-event.event-pendiente {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border: 1px solid #ffc107 !important;
+}
+
+.fc-event.event-pendiente .fc-event-title {
+  color: #000 !important;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.fc-event.event-completado {
+  background-color: #4ade6d !important;
+  color: #fff !important;
+  border: 1px solid #4ade6d !important;
+}
+
+.fc-event.event-completado .fc-event-title {
+  font-weight: bold;
+  color: #000 !important;
+  padding-left: 10px;
+}
+
+.fc-event.event-cancelado {
+  background-color: #c6182a !important;
+  color: #fff !important;
+  border: 1px solid #c6182a !important;
+}
+
+.fc-event.event-cancelado .fc-event-title {
+  font-weight: bold;
+  padding-left: 10px;
 }
