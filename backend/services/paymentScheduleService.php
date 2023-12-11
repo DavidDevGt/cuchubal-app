@@ -109,4 +109,30 @@ class PaymentScheduleService
         }
         return $history;
     }
+
+    // Función para obtener programaciones de pago de los cuchubales de un usuario
+    public function listPaymentSchedulesByUser($userId)
+    {
+        $sql = "SELECT ps.* FROM payment_schedule ps 
+                    JOIN cuchubales c ON ps.cuchubal_id = c.id 
+                    WHERE c.user_id = ? AND ps.active = 1";
+        $result = dbQueryPreparada($sql, [$userId]);
+        $schedules = [];
+        while ($row = dbFetchAssoc($result)) {
+            $schedules[] = new PaymentSchedule(
+                $row['id'],
+                $row['cuchubal_id'],
+                $row['participant_id'],
+                $row['scheduled_date'],
+                $row['amount'],
+                $row['status'],
+                $row['notes'],
+                $row['payment_date'],
+                $row['payment_reference'],
+                $row['payment_method'],
+                $row['payment_confirmed']
+            );
+        }
+        return $schedules;
+    }
 }
